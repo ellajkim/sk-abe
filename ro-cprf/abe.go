@@ -18,12 +18,12 @@ type SecretKey struct {
 
 type Plaintext struct {
 	length int
-	plaintext []*big.Int
+	plaintext []byte
 }
 
 type Ciphertext struct {
 	length int
-	ciphertext []*big.Int
+	ciphertext []byte
 }
 
 // ABE.Setup(1λ) : It computes ppR← CPRF.Setup(1λ) and msk ← CPRF.KeyGen(pp), and outputs a public parameter pp and a master secret key msk.
@@ -47,7 +47,7 @@ func ABEEnc(msk *MasterKey, x []*big.Int, m *Plaintext) (ct *Ciphertext){
 }
 
 // ABE.Dec(skf , ct) : It computes k ← CPRF.CEval(skf , x), and outputs SKE.Dec(k, ct).
-func ABEDec(skf *SecretKey, x []*big.Int, ct *Ciphertext) (fm []*big.Int){
+func ABEDec(skf *SecretKey, x []*big.Int, ct *Ciphertext) (fm []byte){
 	k = skf.CEval(x) // CEval has (csk *ConstrainedKey)
 	// fm := SKEDec(k, ct)
 	// return
