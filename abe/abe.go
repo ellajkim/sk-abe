@@ -1,28 +1,27 @@
 package abe
 
 // not sure if i did the package abe/rocprf stuff correctly
-import {
-	"ro-cprf/rocprf"
+import (
+	"math/big"
+	// "github.com/ellajkim/cprf/ro-cprf/rocprf"
 	// "ske"
-}
+)
 
 // Master key for the CPRF
 // length: length of the inner product
 // modulus: inner product modulus
 // z0: master key
 type SecretKey struct {
-	length  int
-	modulus *big.Int
-	z0      []*big.Int
+	csk *ConstrainedKey
 }
 
 type Plaintext struct {
-	length int
+	length    int
 	plaintext []byte
 }
 
 type Ciphertext struct {
-	length int
+	length     int
 	ciphertext []byte
 }
 
@@ -40,16 +39,16 @@ func ABEKeyGen(msk *MasterKey) (skf *SecretKey) {
 }
 
 // ABE.Enc(msk, x, msg) : It computes k ← CPRF.Eval(msk, x) and ct ← SKE.Enc(k, msg), and outputs ct
-func ABEEnc(msk *MasterKey, x []*big.Int, m *Plaintext) (ct *Ciphertext){
+func ABEEnc(msk *MasterKey, x []*big.Int, m *Plaintext) (ct *Ciphertext) {
 	k := msk.Eval(x) // Eval has (msk *MasterKey)
 	// ct := SKEEnc(k, m)
 	// return
 }
 
 // ABE.Dec(skf , ct) : It computes k ← CPRF.CEval(skf , x), and outputs SKE.Dec(k, ct).
-func ABEDec(skf *SecretKey, x []*big.Int, ct *Ciphertext) (fm []byte){
-	k = skf.CEval(x) // CEval has (csk *ConstrainedKey)
+func ABEDec(skf *SecretKey, x []*big.Int, ct *Ciphertext) (fm []byte) {
+	ck = skf.csk
+	k = ck.CEval(x) // CEval has (csk *ConstrainedKey)
 	// fm := SKEDec(k, ct)
 	// return
 }
-
