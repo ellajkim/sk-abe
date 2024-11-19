@@ -1,54 +1,45 @@
 package abe
 
-// not sure if i did the package abe/rocprf stuff correctly
 import (
 	"math/big"
-	// "github.com/ellajkim/cprf/ro-cprf/rocprf"
-	// "ske"
+	"github.com/ellajkim/cprf/ro-cprf/rocprf"
+	"github.com/ellajkim/cprf/ske"
 )
 
-// Master key for the CPRF
-// length: length of the inner product
-// modulus: inner product modulus
-// z0: master key
-type SecretKey struct {
-	csk *ConstrainedKey
-}
-
-type Plaintext struct {
-	length    int
-	plaintext []byte
-}
-
-type Ciphertext struct {
-	length     int
-	ciphertext []byte
-}
-
 // ABE.Setup(1λ) : It computes ppR← CPRF.Setup(1λ) and msk ← CPRF.KeyGen(pp), and outputs a public parameter pp and a master secret key msk.
-func ABESetup(modulus *big.Int, length int) (msk *MasterKey) {
-	msk, _ := KeyGen(modulus, length)
-	return
+func ABESetup(modulus *big.Int, length int) (*rocprf.MasterKey, error) {
+    msk, err := rocprf.KeyGen(modulus, length)
+    if err != nil {
+        return nil, err
+    }
+    return msk, nil
 }
 
 // ABE.KeyGen(msk, f) : It computes skf ← CPRF.Constrain(msk, f), and outputs skf .
-func ABEKeyGen(msk *MasterKey) (skf *SecretKey) {
-	z := msk.z0
-	skf, _ := msk.Constrain(z) // not sure how this works, Constrain has (msk *MasterKey)
-	return
+func ABEKeyGen(msk *rocprf.MasterKey, f []*big.Int) (*rocprf.ConstrainedKey, error) {
+	skf, err := msk.Constrain(f)
+	if err != nil {
+		return nil, err
+	}
+	return skf, nil
 }
 
 // ABE.Enc(msk, x, msg) : It computes k ← CPRF.Eval(msk, x) and ct ← SKE.Enc(k, msg), and outputs ct
-func ABEEnc(msk *MasterKey, x []*big.Int, m *Plaintext) (ct *Ciphertext) {
-	k := msk.Eval(x) // Eval has (msk *MasterKey)
-	// ct := SKEEnc(k, m)
-	// return
+func ABEEnc(msk *rocprf.MasterKey, x []*big.Int, msg []byte) ([]byte, error){ // is it string?
+	k := msk.Eval(x)
+	ct, err := ske.Encrypt(k, msg)
+	if err != nil {
+		return nil, err
+	}
+	return ct, nil
 }
 
 // ABE.Dec(skf , ct) : It computes k ← CPRF.CEval(skf , x), and outputs SKE.Dec(k, ct).
-func ABEDec(skf *SecretKey, x []*big.Int, ct *Ciphertext) (fm []byte) {
-	ck = skf.csk
-	k = ck.CEval(x) // CEval has (csk *ConstrainedKey)
-	// fm := SKEDec(k, ct)
-	// return
+func ABEDec(skf *rocprf.ConstrainedKey, x []*big.Int, ct []byte) ([]byte, error){
+	k := skf.CEval(x)
+	msg, err := ske.Decrypt(k, ct)
+	if err != nil {
+		return nil, err
+	}
+	return msg, nil
 }
