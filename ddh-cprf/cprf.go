@@ -6,7 +6,7 @@ import (
 	"crypto/sha256"
 	"math/big"
 
-	"github.com/sachaservan/cprf/ddh-cprf/ec"
+	"github.com/ellajkim/cprf/ddh-cprf/ec"
 )
 
 // Public parameters consists of k random group elements

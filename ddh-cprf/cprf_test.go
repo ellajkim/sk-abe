@@ -8,7 +8,7 @@ import (
 	mrand "math/rand"
 	"testing"
 
-	"github.com/sachaservan/cprf/ddh-cprf/ec"
+	"github.com/ellajkim/cprf/ddh-cprf/ec"
 )
 
 func generateRandomBit() int {
