@@ -1,6 +1,7 @@
 package abe
 
 import (
+	"fmt"
 	"math/big"
 
 	rocprf "github.com/ellajkim/cprf/ro-cprf"
@@ -26,11 +27,11 @@ func ABEKeyGen(msk *rocprf.MasterKey, f []*big.Int) (*rocprf.ConstrainedKey, err
 }
 
 // ABE.Enc(msk, x, msg) : It computes k ← CPRF.Eval(msk, x) and ct ← SKE.Enc(k, msg), and outputs ct
-func ABEEnc(msk *rocprf.MasterKey, x []*big.Int, msg []byte) ([]byte, error) { // is it string?
+func ABEEnc(msk *rocprf.MasterKey, x []*big.Int, msg []byte) ([]byte, error) {
 	k := msk.Eval(x)
 	ct, err := ske.Encrypt(k, msg)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("encryption error: %w", err)
 	}
 	return ct, nil
 }
@@ -40,7 +41,7 @@ func ABEDec(skf *rocprf.ConstrainedKey, x []*big.Int, ct []byte) ([]byte, error)
 	k := skf.CEval(x)
 	msg, err := ske.Decrypt(k, ct)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("decryption error: %w", err)
 	}
 	return msg, nil
 }

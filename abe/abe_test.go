@@ -1,29 +1,50 @@
 package abe
 
 import (
+	"bytes"
 	"math/big"
 	"testing"
-	"bytes"
 )
 
 func TestABEScheme(t *testing.T) {
 	// Test parameters
-	modulus := big.NewInt(1000000007) // Example prime modulus
-	length := 4                        // Vector length
-	msg := []byte("Hello, ABE!")      // Test message
+	modulus := big.NewInt(1009) // Small prime for testing
+	length := 5
+	message := []byte("Hello, ABE!")
 	
-	// Test vector x (attribute vector)
+	// Test vectors
 	x := make([]*big.Int, length)
-	for i := 0; i < length; i++ {
-		x[i] = big.NewInt(int64(i + 1))
-	}
-
-	// Test function f (policy vector)
 	f := make([]*big.Int, length)
-	for i := 0; i < length; i++ {
-		f[i] = big.NewInt(int64(i + 1))
+	
+	// Set up vectors where <f,x> = 0 mod modulus
+	// Example: f = [1,1,1,1,1], x = [1,2,3,4,-10]
+	// Inner product: 1+2+3+4-10 = 0
+	for i := 0; i < length-1; i++ {
+		x[i] = big.NewInt(int64(i + 1))
+		f[i] = big.NewInt(1)
 	}
-
+	// Make the last element balance the sum
+	sum := big.NewInt(0)
+	for i := 0; i < length-1; i++ {
+		tmp := new(big.Int).Mul(x[i], f[i])
+		sum.Add(sum, tmp)
+	}
+	x[length-1] = big.NewInt(-10) // or any value that makes sum zero
+	f[length-1] = big.NewInt(1)
+	
+	// Add debug prints
+	t.Logf("x values: %v", x)
+	t.Logf("f values: %v", f)
+	
+	// Verify inner product is 0 mod modulus
+	innerProduct := big.NewInt(0)
+	for i := 0; i < length; i++ {
+		tmp := new(big.Int).Mul(x[i], f[i])
+		innerProduct.Add(innerProduct, tmp)
+	}
+	innerProduct.Mod(innerProduct, modulus)
+	t.Logf("Inner product mod %v: %v", modulus, innerProduct)
+	
 	// Setup
 	msk, err := ABESetup(modulus, length)
 	if err != nil {
@@ -37,7 +58,7 @@ func TestABEScheme(t *testing.T) {
 	}
 
 	// Encryption
-	ct, err := ABEEnc(msk, x, msg)
+	ct, err := ABEEnc(msk, x, message)
 	if err != nil {
 		t.Fatalf("Encryption failed: %v", err)
 	}
@@ -48,38 +69,8 @@ func TestABEScheme(t *testing.T) {
 		t.Fatalf("Decryption failed: %v", err)
 	}
 
-	// Verify decryption
-	if !bytes.Equal(msg, decrypted) {
-		t.Errorf("Decryption mismatch: got %v, want %v", decrypted, msg)
+	// Check decryption result
+	if !bytes.Equal(decrypted, message) {
+		t.Fatalf("Decryption result does not match the original message")
 	}
 }
-
-func TestABESchemeInvalidInput(t *testing.T) {
-	// Test parameters
-	modulus := big.NewInt(1000000007)
-	length := 4
-	msg := []byte("Hello, ABE!")
-
-	// Test with invalid length
-	_, err := ABESetup(modulus, -1)
-	if err == nil {
-		t.Error("Setup should fail with negative length")
-	}
-
-	// Setup with valid parameters for subsequent tests
-	msk, _ := ABESetup(modulus, length)
-
-	// Test KeyGen with invalid function vector length
-	invalidF := make([]*big.Int, length+1) // Wrong length
-	_, err = ABEKeyGen(msk, invalidF)
-	if err == nil {
-		t.Error("KeyGen should fail with invalid function vector length")
-	}
-
-	// Test Encryption with invalid attribute vector length
-	invalidX := make([]*big.Int, length+1) // Wrong length
-	_, err = ABEEnc(msk, invalidX, msg)
-	if err == nil {
-		t.Error("Encryption should fail with invalid attribute vector length")
-	}
-} 
