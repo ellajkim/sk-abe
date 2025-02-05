@@ -7,7 +7,7 @@ This repository contains an implementation of our secret-key attribute based enc
 | Directory | Description |
 | :--- | :--- |
 | [abe/](abe/) | IP-SK-ABE construction |
-| [ro-cprf/](ro-cprf/) | Servan-Schreiber's random oracle based CPRF construction |
+| [ro-cprf/](ro-cprf/) | Random oracle based CPRF construction |
 | [ske/](ske/) | AES-GCM SKE construction |
 
 ## Prerequisites
