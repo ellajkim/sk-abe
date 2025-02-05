@@ -1,14 +1,14 @@
-# Constrained PRFs for Inner Product Predicates
+# Inner-Product Secret-Key ABE
 
-This repository contains implementations of Constrained Pseudorandom Functions (CPRFs) for inner product predicates from [this paper](https://eprint.iacr.org/2024/58) (to appear at AsiaCrypt 2024).
-It includes two different constructions: one based on random oracles and another based on the Decisional Diffie-Hellman (DDH) assumption. The implementation can be used to reproduce Tables 2 & 3 from the paper. 
+This repository contains an implementation of our secret-key attribute based encryption (SK-ABE) scheme using inner products. We use two tools to instantiate our scheme: constrained pseudorandom functions (CPRFs) and symmetric-key encryption (SKE).
 
 ## Code Organization
 
 | Directory | Description |
 | :--- | :--- |
-| [ro-cprf/](ro-cprf/) | Random oracle based CPRF construction |
-| [ddh-cprf/](ddh-cprf/) | DDH (Naor-Reingold) based CPRF construction |
+| [abe/](abe/) | IP-SK-ABE construction |
+| [ro-cprf/](ro-cprf/) | Servan-Schreiber's random oracle based CPRF construction |
+| [ske/](ske/) | AES-GCM SKE construction |
 
 ## Prerequisites
 
@@ -18,9 +18,10 @@ It includes two different constructions: one based on random oracles and another
 
 To run benchmarks for each implementation:
 
-1. Choose the implementation you want to benchmark:
-   - Random Oracle based: `cd ro-cprf`
-   - DDH based: `cd ddh-cprf`
+1. Select the implementation:
+   ```
+   cd abe
+   ```
 
 2. Run the benchmarks:
    ```
@@ -47,25 +48,9 @@ For example, `BenchmarkEval/length=100-10 60027 19896 ns/op` means:
 - Benchmark iterations: 10
 - Average time per evaluation: 19,896 nanoseconds (about 0.02 milliseconds)
 
-## Future Improvements
-
-- [ ] Implement the VDLPN-based construction from [the paper](https://eprint.iacr.org/2024/58).
-- [ ] Optimize implementations (there's room for performance improvements).
-
 ## Acknowledgements
-We thank [Maxime Bombar](https://github.com/mbombar) for reviewing and providing feedback on the code.
+We use Sacha Servan-Schreiber's [random oracle based CPRF](https://github.com/sachaservan/cprf) in our implementation.
 
-# Citations
-```
-@misc{cprfs,
-      author = {Sacha Servan-Schreiber},
-      title = {Constrained Pseudorandom Functions for Inner-Product Predicates from Weaker Assumptions},
-      howpublished = {Cryptology ePrint Archive, Paper 2024/058},
-      year = {2024},
-      note = {\url{https://eprint.iacr.org/2024/058}},
-      url = {https://eprint.iacr.org/2024/058}
-}
-```
 
 ## ⚠️ Important Warning
 
