@@ -32,21 +32,26 @@ To run benchmarks for each implementation:
 
 The benchmark results are presented in the following format:
 ```
-BenchmarkEval/length=10-10                555568              2150 ns/op
-BenchmarkEval/length=50-10                118142              9941 ns/op
-BenchmarkEval/length=100-10                59997             19887 ns/op
-BenchmarkEval/length=500-10                12088             97314 ns/op
-BenchmarkEval/length=1000-10                5764            196743 ns/op
+BenchmarkABEScheme/Vector_Size_5-8         	  611896	      1655 ns/op
+BenchmarkABEScheme/Vector_Size_10-8        	  442987	      2832 ns/op
+BenchmarkABEScheme/Vector_Size_20-8        	  243865	      5559 ns/op
+BenchmarkABEScheme/Vector_Size_50-8        	   87523	     13784 ns/op
+BenchmarkABEScheme/Vector_Size_100-8       	   47011	     26989 ns/op
+BenchmarkABEScheme/Vector_Size_500-8       	    7552	    141130 ns/op
+BenchmarkABEScheme/Vector_Size_1000-8      	    4897	    249314 ns/op
+BenchmarkABEScheme/Vector_Size_2500-8      	    1753	    663087 ns/op
+BenchmarkABEScheme/Vector_Size_10000-8     	     372	   3064785 ns/op
+BenchmarkABEScheme/Vector_Size_100000-8    	      40	  27116415 ns/op
 ```
 
-- `length=X`: Indicates the vector length used in the CPRF evaluation.
+- `Vector_Size_X`: Indicates the vector length used in the IP-SK-ABE evaluation.
 - `-Y`: Indicates number of benchmark iterations.
-- `Z ns/op`: Represents the average time in nanoseconds it takes for a single CPRF evaluation operation.
+- `Z ns/op`: Represents the average time in nanoseconds it takes for a single IP-SK-ABE evaluation operation.
 
-For example, `BenchmarkEval/length=100-10 60027 19896 ns/op` means:
-- Vector length: 100
-- Benchmark iterations: 10
-- Average time per evaluation: 19,896 nanoseconds (about 0.02 milliseconds)
+For example, `BenchmarkABEScheme/Vector_Size_1000-8 4897	249314 ns/op` means:
+- Vector length: 1000
+- Benchmark iterations: 8
+- Average time per evaluation: 249,314 nanoseconds (about 0.25 milliseconds)
 
 ## Acknowledgements
 We use Sacha Servan-Schreiber's [random oracle based CPRF](https://github.com/sachaservan/cprf) in our implementation.
